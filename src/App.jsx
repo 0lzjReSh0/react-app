@@ -12,7 +12,7 @@ import {
 import PersonalPortrait from "./components/PersonalPortrait";
 import EmploymentPredict from "./components/EmploymentPredict";
 import Home from "./components/Home"
-import { Layout, Menu, Breadcrumb } from "antd";
+import { Layout, Menu, Dropdown, Breadcrumb, Button } from "antd";
 import Login from "./components/Login";
 import ConsumptionAnalysis from "./components/ConsumptionAnalysis";
 import TeacherView from "./components/TeacherView";
@@ -24,6 +24,7 @@ import GradeAnalysis from "./components/Teacher";
 import StableCluster from "./components/StableCluster";
 import {useUser , UserProvider } from "./components/UserContext";
 import Sidebar from "./components/Sidebar";
+import { UserOutlined, LogoutOutlined } from "@ant-design/icons";
 const AppBreadcrumb = () => {
   const location = useLocation();
   const pathSnippets = location.pathname.split("/").filter((i) => i);
@@ -57,12 +58,12 @@ const NoPermission = () => {
   return <div>无权查看</div>;
 };
 function App() {
-  const { user } = useUser();
+  // const navigate = useNavigate();
+  const { user} = useUser();
   // const [isLoggedIn, setIsLoggedIn] = useState(false);
   console.log(user);  
-  const isEduUser = user.snumber && user.snumber.startsWith("edu");
+  const isEduUser = user?.snumber?.startsWith("edu");
   
-
   return (
     // <UserProvider>
     <Router>
@@ -81,6 +82,14 @@ function App() {
         <Sidebar />
 
         <Layout style={{ minHeight: "100vh" }}>
+          {user && (
+            <Header
+              style={{ display: "flex", justifyContent: "space-between" }}
+            >
+              <div className="logo" />
+              {<Login />}
+            </Header>
+          )}
           <Content style={{ margin: "0 16px" }}>
             <AppBreadcrumb />
             {/* <div style={{ padding: 24, background: "#fff", minHeight: 360 }}> */}

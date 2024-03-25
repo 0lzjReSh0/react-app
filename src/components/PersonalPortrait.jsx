@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
 import { Layout, Card, Tabs, Typography, List, Tag, Descriptions } from "antd";
 const { Title, Text } = Typography;
 import {
@@ -20,20 +19,19 @@ import { useUser } from "./UserContext";
 const { Content } = Layout;
 
 const PersonalPortrait = () => {
-  const { user } = useUser();
-  const location = useLocation();
-  const studentNumber = location.state?.studentId || user.snumber;
+  
   const [retakeInfo, setRetakeInfo] = useState({});
   const [studentGrades, setStudentGrades] = useState([]);
   const [stats, setStats] = useState({});
   const [cluster, setCluster] = useState(null);
   const [evaluation, setEvaluation] = useState("");
+  const { user } = useUser();
   const [protrait, setProtrait] = useState([]);
 
   useEffect(() => {
     console.log(user);
-    if (studentNumber) {
-      fetch(`http://localhost:8000/api/student-profile/${studentNumber}`)
+    if (user && user.snumber) {
+      fetch(`http://localhost:8000/api/student-profile/${user.snumber}`)
         .then((response) => response.json())
         .then((data) => {
           console.log(data);
@@ -62,7 +60,8 @@ const PersonalPortrait = () => {
             Object.values(data.stats.avg).reduce((acc, cur) => acc + cur, 0) /
             Object.values(data.stats.avg).length;
 
-          const studentAverage = data.grade_avg;
+          const studentAverage =
+            data.grade_avg
 
           let evalText = data.commentary;
           console.log(classAverage);
@@ -75,8 +74,20 @@ const PersonalPortrait = () => {
         })
         .catch((error) => console.error("Error fetching data:", error));
     }
-  }, [studentNumber]);
+  }, [user]);
 
+  // const calculateStrengthsAndWeaknesses = () => {
+  //   const strengths = [];
+  //   const weaknesses = [];
+  //   studentGrades.forEach((grade) => {
+  //     if (grade.score > stats.avg[`${grade.subject}_grade__avg`]) {
+  //       strengths.push(grade.subject);
+  //     } else if (grade.score < stats.avg[`${grade.subject}_grade__avg`]) {
+  //       weaknesses.push(grade.subject);
+  //     }
+  //   });
+  //   return { strengths, weaknesses };
+  // };
   const radarData = studentGrades.map((grade) => ({
     subject: grade.subject,
     score: grade.score,

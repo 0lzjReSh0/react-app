@@ -47,23 +47,14 @@ const GradeAnalysis = () => {
   const navigate = useNavigate();
   const [clusterData, setClusterData] = useState([]);
 
-  const goToClusterDetails = (studentId) => {
+  const goToClusterDetails = () => {
     if (viewMode === "grades") {
-      navigate("/teacher_view/cluster", { state: { studentId } });
+      navigate("/teacher_view/cluster");
     } else {
-      navigate("/teacher_view/stable_cluster", { state: { studentId } });
+      navigate("/teacher_view/stable_cluster");
     }
   };
-  const handleChartClick = (studentId) => {
-    // Check if the current logged-in user is an educator
-    if (setUser.snumber.startsWith("edu")) {
-      // If an educator is logged in, just navigate to the student's portrait without setting the user.
-      goToClusterDetails(studentId);
-    } else {
-      // If a student is logged in, navigate to their own portrait.
-      navigate("/personal-portrait");
-    }
-  };
+
   useEffect(() => {
     if (viewMode === "grades") {
     fetch(`http://localhost:8000/api/weight-grades`)
@@ -127,8 +118,8 @@ const GradeAnalysis = () => {
                 shape="circle" // 你可以改变形状
                 lineType="joint"
                 lineJointType="monotoneX"
-                onClick={(e) => handleChartClick(e.id)}
-                // onFinish={onFinish}
+                onClick={onFinish}
+                onFinish={onFinish}
               />
             ))}
         </ScatterChart>
@@ -151,8 +142,16 @@ const GradeAnalysis = () => {
           <ResponsiveContainer width="70%" height={600}>
             <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis type="number" dataKey={"pca_1"} name={"PCA Feature 1"} />
-              <YAxis type="number" dataKey={"pca_2"} name={"PCA Feature 2"} />
+              <XAxis
+                type="number"
+                dataKey={"pca_1"}
+                name={"PCA Feature 1"}
+              />
+              <YAxis
+                type="number"
+                dataKey={"pca_2"}
+                name={"PCA Feature 2"}
+              />
               <Tooltip content={<CustomTooltip />} />
               <Legend />
               {clusterData &&
@@ -169,7 +168,7 @@ const GradeAnalysis = () => {
                     shape="circle" // 你可以改变形状
                     lineType="joint"
                     lineJointType="monotoneX"
-                    onClick={(e) => handleChartClick(e.id)}
+                    onClick={onFinish}
                     onFinish={onFinish}
                   />
                 ))}
@@ -178,10 +177,11 @@ const GradeAnalysis = () => {
         ) : (
           renderStabilityScatterChart() // 在这里调用渲染散点图的函数
         )}
-        <Button onClick={goToClusterDetails} style={{ marginLeft: "20px" }}>
-          聚类具体信息
-        </Button>
+      <Button onClick={goToClusterDetails} style={{ marginLeft: "20px" }}>
+        聚类具体信息
+      </Button>
       </div>
+
     </>
   );
 };
