@@ -4,15 +4,18 @@ import { useNavigate } from "react-router-dom";
 import { Layout, Menu, Dropdown, Button } from "antd";
 import { UserOutlined, LogoutOutlined } from "@ant-design/icons";
 import { useUser } from "./UserContext";
+import { Provider, useSelector, useDispatch } from "react-redux";
+import { store } from "../store/store";
+import { actionTypes } from "../store/userReducer";
 
 const { Header } = Layout;
 
-const Login = () => {
+const LogOut = () => {
   const navigate = useNavigate();
-  const { user, setUser } = useUser();
-
+  const user = useSelector((state) => state.user.user);
+  const dispatch = useDispatch();
   const handleLogout = () => {
-    setUser({ snumber: null }); // Set user to an empty object instead of null
+    dispatch({ type: actionTypes.CLEAR_USER });
     navigate("/");
   };
 
@@ -39,4 +42,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default LogOut;

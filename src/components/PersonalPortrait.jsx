@@ -14,8 +14,9 @@ import {
   PolarRadiusAxis,
   Radar,
 } from "recharts";
-import { useUser } from "./UserContext";
-
+// import { useUser } from "./UserContext";
+import { useLocation } from "react-router-dom";
+import { useSelector } from "react-redux";
 const { Content } = Layout;
 
 const PersonalPortrait = () => {
@@ -25,13 +26,15 @@ const PersonalPortrait = () => {
   const [stats, setStats] = useState({});
   const [cluster, setCluster] = useState(null);
   const [evaluation, setEvaluation] = useState("");
-  const { user } = useUser();
+  // const { user } = useUser();
   const [protrait, setProtrait] = useState([]);
-
+  const loggedInUser = useSelector((state) => state.user.user);
+  const location = useLocation(); // 使用 useLocation 获取路由状态
+  const studentNumber = location.state?.snumber || loggedInUser.snumber; 
   useEffect(() => {
-    console.log(user);
-    if (user && user.snumber) {
-      fetch(`http://localhost:8000/api/student-profile/${user.snumber}`)
+    console.log(studentNumber);
+    if (studentNumber) {
+      fetch(`http://localhost:8000/api/student-profile/${studentNumber}`)
         .then((response) => response.json())
         .then((data) => {
           console.log(data);
@@ -60,8 +63,7 @@ const PersonalPortrait = () => {
             Object.values(data.stats.avg).reduce((acc, cur) => acc + cur, 0) /
             Object.values(data.stats.avg).length;
 
-          const studentAverage =
-            data.grade_avg
+          const studentAverage = data.grade_avg;
 
           let evalText = data.commentary;
           console.log(classAverage);
@@ -74,7 +76,7 @@ const PersonalPortrait = () => {
         })
         .catch((error) => console.error("Error fetching data:", error));
     }
-  }, [user]);
+  }, [studentNumber]);
 
   // const calculateStrengthsAndWeaknesses = () => {
   //   const strengths = [];

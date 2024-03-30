@@ -54,6 +54,14 @@ const GradeAnalysis = () => {
       navigate("/teacher_view/stable_cluster");
     }
   };
+  const handleStudentClick = (student) => {
+    if (viewMode === "grades") {
+      
+      navigate("/personal-portrait", { state: { snumber: student.id } });
+    } else {
+      navigate("/personal-portrait", { state: { snumber: student.snumber } });
+    }
+  };
 
   useEffect(() => {
     if (viewMode === "grades") {
@@ -78,9 +86,7 @@ const GradeAnalysis = () => {
   }, [viewMode]);
 
   const onFinish = (values) => {
-    //   const { username } = values.id;
       setIsLoggedIn(true);
-      // setIsLoggedIn(true);
       if (viewMode === "grades") {
       setUser({ snumber: values.id });
       console.log("Success:", values.id);
@@ -118,7 +124,7 @@ const GradeAnalysis = () => {
                 shape="circle" // 你可以改变形状
                 lineType="joint"
                 lineJointType="monotoneX"
-                onClick={onFinish}
+                onClick={({ payload }) => handleStudentClick(payload)}
                 onFinish={onFinish}
               />
             ))}
@@ -142,16 +148,8 @@ const GradeAnalysis = () => {
           <ResponsiveContainer width="70%" height={600}>
             <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis
-                type="number"
-                dataKey={"pca_1"}
-                name={"PCA Feature 1"}
-              />
-              <YAxis
-                type="number"
-                dataKey={"pca_2"}
-                name={"PCA Feature 2"}
-              />
+              <XAxis type="number" dataKey={"pca_1"} name={"PCA Feature 1"} />
+              <YAxis type="number" dataKey={"pca_2"} name={"PCA Feature 2"} />
               <Tooltip content={<CustomTooltip />} />
               <Legend />
               {clusterData &&
@@ -168,7 +166,7 @@ const GradeAnalysis = () => {
                     shape="circle" // 你可以改变形状
                     lineType="joint"
                     lineJointType="monotoneX"
-                    onClick={onFinish}
+                    onClick={({ payload }) => handleStudentClick(payload)}
                     onFinish={onFinish}
                   />
                 ))}
@@ -177,11 +175,10 @@ const GradeAnalysis = () => {
         ) : (
           renderStabilityScatterChart() // 在这里调用渲染散点图的函数
         )}
-      <Button onClick={goToClusterDetails} style={{ marginLeft: "20px" }}>
-        聚类具体信息
-      </Button>
+        <Button onClick={goToClusterDetails} style={{ marginLeft: "20px" }}>
+          聚类具体信息
+        </Button>
       </div>
-
     </>
   );
 };

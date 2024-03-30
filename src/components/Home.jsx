@@ -2,20 +2,19 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Typography, Form, Input, Button, message } from "antd";
 import { useUser } from "./UserContext";
-
+import { useDispatch } from "react-redux";
 import Cookies from "js-cookie";
-
 const { Title } = Typography;
 
 const Home = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
-  const { setUser } = useUser();
-
+  // const { setUser } = useUser();
+  const dispatch = useDispatch();
   const onFinish = (values) => {
     const { username, password } = values;
     const csrfToken = Cookies.get("csrftoken"); // 获取 CSRF token
-
+    const userInfo = { snumber: username };
     fetch("http://localhost:8000/api/user-profile/", {
       method: "POST",
       headers: {
@@ -38,14 +37,15 @@ const Home = () => {
       .then((data) => {
         if (data.status === "success") {
           setIsLoggedIn(true);
-          setUser({ snumber: username });
+          // setUser({ snumber: username });
+          dispatch({ type: "SET_USER", payload: userInfo });
 
           // 判断用户名是否以 "edu" 开头
           if (username.startsWith("edu")) {
             message.success("Login success!"); // 显示成功消息
             navigate("/teacher_view/grade_analysis"); // 跳转到教师视图
           } else {
-            navigate("/personal-portrait"); // 跳转到个人画像页面
+            navigate("/personal-portrait", { state: { snumber: username } }); // 跳转到个人画像页面
           }
           // 页面会在跳转后自动刷新
         } else {
