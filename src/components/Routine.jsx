@@ -34,14 +34,14 @@ const CustomTooltip = ({ active, payload }) => {
   return null;
 };
 
-const ConsumptionAnalysis = () => {
+const Routine = () => {
   const [clusterData, setClusterData] = useState([]);
   const { user } = useUser();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (user) {
-      fetch(`http://localhost:8000/api/cs-consume`)
+      fetch(`http://localhost:8000/api/cs-routine`)
         .then((response) => response.json())
         .then((data) => {
           setClusterData(data.data);
@@ -58,47 +58,42 @@ const ConsumptionAnalysis = () => {
   };
   const colors = ["#8884d8", "#82ca9d", "#ffc658"];
   const goToClusterDetails = () => {
-
-      navigate("/teacher_view/consumption_cluster");
-    
+    navigate("/teacher_view/routine_cluster");
   };
   // Assuming clusterData is in the format you specified at the beginning of your question
   const renderScatterChart = (data) => (
     <div>
-    <ResponsiveContainer width="70%" height={600}>
-      <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis type="number" dataKey={"pca_1"} name={"PCA Feature 1"} />
-        <YAxis type="number" dataKey={"pca_2"} name={"PCA Feature 2"} />
-        <Tooltip content={<CustomTooltip />} />
-        <Legend />
-        {clusterData &&
-          Array.from(new Set(clusterData.map((item) => item.cluster))).map(
-            (cluster, index) => (
-              <Scatter
-                key={cluster}
-                name={`Cluster ${cluster}`}
-                data={clusterData.filter(
-                  (item) => item.cluster === cluster
-                )}
-                fill={colors[cluster % colors.length]} // 根据聚类标签选择颜色
-                shape="circle" // 你可以改变形状
-                lineType="joint"
-                lineJointType="monotoneX"
-                onClick={({ payload }) => handleStudentClick(payload)}
-                
-              />
-            )
-          )}
-      </ScatterChart>
-    </ResponsiveContainer>
-    <Button onClick={goToClusterDetails} style={{ marginLeft: "20px" }}>
-          CLuster analysis
-    </Button>
+      <ResponsiveContainer width="70%" height={600}>
+        <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis type="number" dataKey={"pca_1"} name={"PCA Feature 1"} />
+          <YAxis type="number" dataKey={"pca_2"} name={"PCA Feature 2"} />
+          <Tooltip content={<CustomTooltip />} />
+          <Legend />
+          {clusterData &&
+            Array.from(new Set(clusterData.map((item) => item.cluster))).map(
+              (cluster, index) => (
+                <Scatter
+                  key={cluster}
+                  name={`Cluster ${cluster}`}
+                  data={clusterData.filter((item) => item.cluster === cluster)}
+                  fill={colors[cluster % colors.length]} // 根据聚类标签选择颜色
+                  shape="circle" // 你可以改变形状
+                  lineType="joint"
+                  lineJointType="monotoneX"
+                  onClick={({ payload }) => handleStudentClick(payload)}
+                />
+              )
+            )}
+        </ScatterChart>
+      </ResponsiveContainer>
+      <Button onClick={goToClusterDetails} style={{ marginLeft: "20px" }}>
+        CLuster analysis
+      </Button>
     </div>
   );
 
   return <div>{renderScatterChart(clusterData)}</div>;
 };
 
-export default ConsumptionAnalysis;
+export default Routine;

@@ -28,7 +28,9 @@ import { UserOutlined, LogoutOutlined } from "@ant-design/icons";
 import { Provider, useSelector, useDispatch } from "react-redux";
 import { store } from "./store/store";
 import { actionTypes } from "./store/userReducer";
-
+import ConsumptionCluster from "./components/ConsumptionCluster";
+import Routine from "./components/Routine";
+import RoutineCluster from "./components/RoutineCluster";
 const AppBreadcrumb = () => {
   const location = useLocation();
   const pathSnippets = location.pathname.split("/").filter((i) => i);
@@ -78,81 +80,79 @@ function App() {
   return (
     // <UserProvider>
     <Router>
-        <Header
-          className="site-layout-background"
-          style={{
-            padding: 0,
-            width: 1905,
-            textAlign: "center",
-            color: "white",
-          }}
-        >
-          学生画像系统 {/* Student Portrait System */}
-        </Header>
+      <Header
+        className="site-layout-background"
+        style={{
+          padding: 0,
+          width: 1905,
+          textAlign: "center",
+          color: "white",
+        }}
+      >
+        学生画像系统 {/* Student Portrait System */}
+      </Header>
+      <Layout style={{ minHeight: "100vh" }}>
+        <Sidebar />
+
         <Layout style={{ minHeight: "100vh" }}>
-          <Sidebar />
+          {user && (
+            <Header
+              style={{ display: "flex", justifyContent: "space-between" }}
+            >
+              <div className="logo" />
 
-          <Layout style={{ minHeight: "100vh" }}>
-            {user && (
-              <Header
-                style={{ display: "flex", justifyContent: "space-between" }}
-              >
-                <div className="logo" />
+              {<LogOut />}
+            </Header>
+          )}
+          <Content style={{ margin: "0 16px" }}>
+            <AppBreadcrumb />
+            {/* <div style={{ padding: 24, background: "#fff", minHeight: 360 }}> */}
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/Login" element={<Home />} />
+              <Route path="/personal-portrait" element={<PersonalPortrait />} />
+              <Route
+                path="/employment-predict"
+                element={<EmploymentPredict />}
+              />
+              <Route path="/warning_analysis" element={<Home />} />
 
-                {<LogOut/>}
-
-                
-              </Header>
-            )}
-            <Content style={{ margin: "0 16px" }}>
-              <AppBreadcrumb />
-              {/* <div style={{ padding: 24, background: "#fff", minHeight: 360 }}> */}
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/Login" element={<Home />} />
-                <Route
-                  path="/personal-portrait"
-                  element={
-                    <PersonalPortrait />
-                  }
-                />
-                <Route
-                  path="/employment-predict"
-                  element={
-                    <EmploymentPredict />
-                  }
-                />
-                <Route
-                  path="/warning_analysis"
-                  element={<Home />}
-                />
-
-                <Route
-                  path="teacher_view/grade_analysis"
-                  element={isEduUser ? <GradeAnalysis /> : <NoPermission />}
-                />
-                <Route
-                  path="teacher_view/consumption_analysis"
-                  element={
-                    isEduUser ? <ConsumptionAnalysis /> : <NoPermission />
-                  }
-                />
-                <Route
-                  path="/teacher_view/cluster"
-                  element={isEduUser ? <Cluster /> : <NoPermission />}
-                />
-                <Route
-                  path="/teacher_view/"
-                  element={isEduUser ? <TeacherView /> : <NoPermission />}
-                />
-                <Route
-                  path="/teacher_view/stable_cluster"
-                  element={isEduUser ? <StableCluster /> : <NoPermission />}
-                />
-              </Routes>
-            </Content>
-          </Layout>
+              <Route
+                path="teacher_view/grade_analysis"
+                element={isEduUser ? <GradeAnalysis /> : <NoPermission />}
+              />
+              <Route
+                path="teacher_view/consumption_analysis"
+                element={isEduUser ? <ConsumptionAnalysis /> : <NoPermission />}
+              />
+              <Route
+                path="/teacher_view/cluster"
+                element={isEduUser ? <Cluster /> : <NoPermission />}
+              />
+              <Route
+                path="/teacher_view/"
+                element={isEduUser ? <TeacherView /> : <NoPermission />}
+              />
+              <Route
+                path="/teacher_view/stable_cluster"
+                element={isEduUser ? <StableCluster /> : <NoPermission />}
+              />
+              <Route
+                path="/teacher_view/consumption_cluster"
+                element={isEduUser ? <ConsumptionCluster /> : <NoPermission />}
+              />
+              <Route
+                path="/teacher_view/routine"
+                element={isEduUser ? <Routine /> : <NoPermission />}
+              />
+              <Route
+                path="/teacher_view/routine_cluster"
+                element={isEduUser ? <RoutineCluster /> : <NoPermission />}
+              />
+            </Routes>
+          </Content>
         </Layout>
+      </Layout>
     </Router>
     // </UserProvider>
   );

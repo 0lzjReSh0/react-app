@@ -23,7 +23,7 @@ const StableCluster = () => {
   const [clusterAverages, setClusterAverages] = useState({});
   const [stats, setStats] = useState({});
   const { user } = useUser();
-  const [evaluation, setEvaluation] = useState("");
+  const [evaluation, setEvaluation] = useState({});
 
   useEffect(() => {
     if (user) {
@@ -35,22 +35,33 @@ const StableCluster = () => {
             data.data,
             data.stats.avg
           );
+          console.log(clusterAverages);
           setStats(data.stats || {});
           
-          setEvaluation(data.commentary);
+          setEvaluation(data.stats.conmmentary);
           setClusterAverages(clusterAverages);
         })
         .catch((error) => console.error("Error fetching data:", error));
-    }
-
+      }
+      
+      
+    }, [user]);
     
-  }, [user]);
+    console.log(clusterAverages);
+  
 
+  const renderComments = () => {
+    return Object.keys(evaluation).map((key) => (
+      <Descriptions.Item key={key} label={`Cluster ${key}`}>
+        {evaluation[key]}
+      </Descriptions.Item>
+    ));
+  };
   const calculateClusterAverages = (studentWgrades, avgStats) => {
     let clusterData = { cluster0: [], cluster1: [], cluster2: [] };
 
     studentWgrades.forEach((student) => {
-      const stablecluster = `cluster${student.stablecluster}`;
+      const stablecluster = `cluster${student.stable_cluster}`;
       if (clusterData[stablecluster]) {
         clusterData[stablecluster].push(student);
       }
@@ -124,7 +135,7 @@ const StableCluster = () => {
       children: renderRadarChart(
         "stablecluster 0",
         stats,
-        clusterAverages.cluster0 || []
+        clusterAverages.cluster0
       ),
     },
     {
@@ -133,7 +144,7 @@ const StableCluster = () => {
       children: renderRadarChart(
         "stablecluster 1",
         stats,
-        clusterAverages.cluster1 || []
+        clusterAverages.cluster1
       ),
     },
     {
@@ -142,7 +153,7 @@ const StableCluster = () => {
       children: renderRadarChart(
         "stablecluster 2",
         stats,
-        clusterAverages.cluster2 || []
+        clusterAverages.cluster2
       ),
     },
   ];
@@ -153,8 +164,8 @@ const StableCluster = () => {
         <Content style={{ width: "1200px", padding: "20px", marginTop: 30 }}>
           <div style={{ background: "#fff", padding: 24, minHeight: 280 }}>
             <Tabs defaultActiveKey="1" items={tabItems} />
-            <Descriptions title="学生评语" style={{ marginTop: 20 }}>
-              <Descriptions.Item label="评价">{evaluation}</Descriptions.Item>
+            <Descriptions title="Evaluation" style={{ marginTop: 20 }}>
+              {renderComments()}
             </Descriptions>
           </div>
         </Content>

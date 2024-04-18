@@ -19,10 +19,10 @@ const Sidebar = () => {
             key: "2",
             label: <Link to="/employment-predict">就业预测</Link>,
           },
-          {
-            key: "3",
-            label: <Link to="/warning_analysis">预警分析</Link>,
-          },
+          // {
+          //   key: "3",
+          //   label: <Link to="/warning_analysis">预警分析</Link>,
+          // },
           {
             key: "sub",
             label: "学生群像",
@@ -35,6 +35,12 @@ const Sidebar = () => {
                 key: "6",
                 label: (
                   <Link to="/teacher_view/consumption_analysis">消费分析</Link>
+                ),
+              },
+              {
+                key: "7",
+                label: (
+                  <Link to="/teacher_view/routine">生活指数分析</Link>
                 ),
               },
             ],

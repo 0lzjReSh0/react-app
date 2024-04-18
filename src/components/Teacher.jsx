@@ -29,7 +29,7 @@ const CustomTooltip = ({ active, payload }) => {
           border: "1px solid #ddd",
         }}
       >
-        <p>{`ID: ${data.id}`}</p>
+        <p>{`ID: ${data.snumber}`}</p>
         <p>{`PCA Feature 1: ${data.pca_1.toFixed(2)}`}</p>
         <p>{`PCA Feature 2: ${data.pca_2.toFixed(2)}`}</p>
       </div>
@@ -57,7 +57,7 @@ const GradeAnalysis = () => {
   const handleStudentClick = (student) => {
     if (viewMode === "grades") {
       
-      navigate("/personal-portrait", { state: { snumber: student.id } });
+      navigate("/personal-portrait", { state: { snumber: student.snumber } });
     } else {
       navigate("/personal-portrait", { state: { snumber: student.snumber } });
     }
@@ -69,7 +69,7 @@ const GradeAnalysis = () => {
       .then((response) => response.json())
       .then((data) => {
         setClusterData(data.student_wgrades);
-        console.log(data);
+        console.log("ClusterData", data.student_wgrades);
       })
       .catch((error) => {
         console.error("Error fetching cluster data:", error);
@@ -88,8 +88,8 @@ const GradeAnalysis = () => {
   const onFinish = (values) => {
       setIsLoggedIn(true);
       if (viewMode === "grades") {
-      setUser({ snumber: values.id });
-      console.log("Success:", values.id);
+      setUser({ snumber: values.snumber });
+      console.log("Success:", values.snumber);
       } else{
         setUser({ snumber: values.snumber});
       }
@@ -112,13 +112,13 @@ const GradeAnalysis = () => {
           <Legend />
           {stabilityData &&
             Array.from(
-              new Set(stabilityData.map((item) => item.stablecluster))
+              new Set(stabilityData.map((item) => item.stable_cluster))
             ).map((cluster, index) => (
               <Scatter
                 key={cluster}
                 name={`Cluster ${cluster}`}
                 data={stabilityData.filter(
-                  (item) => item.stablecluster === cluster
+                  (item) => item.stable_cluster === cluster
                 )}
                 fill={colors[cluster % colors.length]} // 根据聚类标签选择颜色
                 shape="circle" // 你可以改变形状
@@ -154,15 +154,15 @@ const GradeAnalysis = () => {
               <Legend />
               {clusterData &&
                 Array.from(
-                  new Set(clusterData.map((item) => item.cluster))
-                ).map((cluster, index) => (
+                  new Set(clusterData.map((item) => item.grade_cluster))
+                ).map((grade_cluster, index) => (
                   <Scatter
-                    key={cluster}
-                    name={`Cluster ${cluster}`}
+                    key={grade_cluster}
+                    name={`Cluster ${grade_cluster}`}
                     data={clusterData.filter(
-                      (item) => item.cluster === cluster
+                      (item) => item.grade_cluster === grade_cluster
                     )}
-                    fill={colors[cluster % colors.length]} // 根据聚类标签选择颜色
+                    fill={colors[grade_cluster % colors.length]} // 根据聚类标签选择颜色
                     shape="circle" // 你可以改变形状
                     lineType="joint"
                     lineJointType="monotoneX"
@@ -176,7 +176,7 @@ const GradeAnalysis = () => {
           renderStabilityScatterChart() // 在这里调用渲染散点图的函数
         )}
         <Button onClick={goToClusterDetails} style={{ marginLeft: "20px" }}>
-          聚类具体信息
+          Cluster details
         </Button>
       </div>
     </>
